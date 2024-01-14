@@ -29,9 +29,19 @@ def test_unetr(args, model_weights: str, pred_dir:str):
                     backbone=args.backbone, encoder=args.encoder, out_channels=2, use_sam_stats=args.use_sam_stats,
                     final_activation="Sigmoid",
                     )
-        
-   
-                model.load_state_dict(torch.load(model_weights, map_location=torch.device('cpu'))["model_state"])
+
+                # NOTE:
+                # here's the implementation for the custom unpickling to ignore the preproc. fns.
+                from micro_sam.util import _CustomUnpickler
+                import pickle
+
+                # over-ride the unpickler with our custom one
+                custom_pickle = pickle
+                custom_pickle.Unpickler = _CustomUnpickler
+
+                state = torch.load(model_weights, map_location="cpu", pickle_module=custom_pickle)
+                model_state = state["model_state"]
+                model.load_state_dict[model_state]
 
                 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
