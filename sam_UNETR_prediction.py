@@ -12,6 +12,8 @@ import argparse
 
 
 
+def identity(raw):
+        return raw
 
 
 def test_unetr(args, model_weights: str, pred_dir:str):
@@ -29,8 +31,7 @@ def test_unetr(args, model_weights: str, pred_dir:str):
                     )
         
    
-                #model.load_state_dict(torch.load(model_weights)["model_state"]) #, map_location=torch.device('cpu')
-                model.load_state_dict(torch.load(model_weights)["model_state"]) #, map_location=torch.device('cpu')
+                model.load_state_dict(torch.load(model_weights, map_location=torch.device('cpu'))["model_state"])
 
                 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
@@ -49,7 +50,7 @@ def test_unetr(args, model_weights: str, pred_dir:str):
 
                         #inputs = torch_em.transform.raw.standardize(inputs) ###for pretrained : no need #### for scratch: need it
                         
-                        predictions = predict_with_halo(inputs, model, gpu_ids=[device], block_shape=(128,128), halo = (48,48), preprocess=None)
+                        predictions = predict_with_halo(inputs, model, gpu_ids=[device], block_shape=(384,384), halo = (68,68)) #, preprocess=None
                        # for pretrained: preprocess = none , 
                        # for scratch : remove it (or preprocess=standardize  which is default )
                         
