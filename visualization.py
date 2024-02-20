@@ -119,7 +119,7 @@ import numpy as np
 # UNET_Cremi = [0.474, 0.444, 0.406, 0.475, 0.370]
 # sample_numbers = ['10', '30', '50', '75', 'all']
 
-#############
+###########################################################################################################
 # ## LiveCell MCF7 foreground dice score
 # UNETR_sc = [0.730, 0.770, 0.767, 0.788]
 # UNETR_sam_vit_b = [0.752, 0.789, 0.795, 0.815]
@@ -133,42 +133,66 @@ import numpy as np
 # sample_numbers = ['10', '50', '100', 'all']
 #########
 
-# ## LiveCell MCF7 instance  msa
-UNETR_sc = [0.049, 0.076, 0.085, 0.098]
-UNETR_sam_vit_b = [0.10, 0.148, 0.162, 0.212]
-UNET = [0.111, 0.139, 0.169, 0.198]
-sample_numbers = ['10', '50', '100', 'all']
+# # ## LiveCell MCF7 instance  msa
+# UNETR_sc = [0.049, 0.076, 0.085, 0.098]
+# UNETR_sam_vit_b = [0.10, 0.148, 0.162, 0.212]
+# UNET = [0.111, 0.139, 0.169, 0.198]
+# sample_numbers = ['10', '50', '100', 'all']
+##################################################################################################
 
 # #######
-### LiveCell all foreground dice score
-UNETR_sc = [0.049, 0.076, 0.085, 0.098]
-UNETR_sam_vit_b = [0.881, 0.865, 0.699, 0.842, 0.872, 0.804, 0.916, 0.881]
+# ### LiveCell all foreground dice score
+# UNETR_sc = [0.852, 0.769, 0.580, 0.723, 0.815, 0.728, 0.874, 0.847]
+# UNETR_sam_vit_b = [0.881, 0.865, 0.699, 0.842, 0.872, 0.804, 0.916, 0.881]
+# UNET = [ 0.941, 0.882,  0.854, 0.906, 0.894, 0.836 ,0.930, 0.944]
+# sample_numbers = ["A172", "BT474", "BV2", "Huh7", "MCF7", "SHSY5Y", "SkBr3", "SKOV3"]
+# #####
+
+# ### LiveCell all boundary dice score
+# UNETR_sc = [0.390, 0.362, 0.388, 0.212, 0.435, 0.467, 0.523, 0.376]
+# UNETR_sam_vit_b = [0.433, 0.441, 0.447, 0.302, 0.494, 0.504, 0.587, 0.418]
+# UNET = [ 0.469 ,0.501, 0.624, 0.425, 0.532, 0.555, 0.618, 0.451]
+# sample_numbers = ["A172", "BT474", "BV2", "Huh7", "MCF7", "SHSY5Y", "SkBr3", "SKOV3"]
+# ##########
+
+# ### LiveCell all instance msa
+# UNETR_sc = [0.138, 0.117, 0.320, 0.081, 0.127, 0.095, 0.522, 0.182]
+# UNETR_sam_vit_b = [0.200, 0.191, 0.462, 0.196, 0.214, 0.136, 0.612, 0.261]
+# UNET = [ 0.194, 0.216, 0.497, 0.277, 0.214, 0.124, 0.565, 0.228]
+# sample_numbers = ["A172", "BT474", "BV2", "Huh7", "MCF7", "SHSY5Y", "SkBr3", "SKOV3"]
+# ##########
+####################################################################################################
+
+### LiveCell all 60sample foreground dice score
+UNETR_sc = [0.855, 0.778, 0.556, 0.740, 0.812, 0.738, 0.878, 0.852]
+UNETR_sam_vit_b = [0.87106414 0.84344057 0.6712519  0.81179122 0.85451793 0.78096812
+ 0.90456652 0.87356204]
 UNET = [ 0.941, 0.882,  0.854, 0.906, 0.894, 0.836 ,0.930, 0.944]
-sample_numbers = ['10', '50', '100', 'all']
+sample_numbers = ["A172", "BT474", "BV2", "Huh7", "MCF7", "SHSY5Y", "SkBr3", "SKOV3"]
 #####
 
-### LiveCell all boundary dice score
-UNETR_sc = [0.049, 0.076, 0.085, 0.098]
-UNETR_sam_vit_b = [0.433, 0.441, 0.447, 0.302, 0.494, 0.504, 0.587, 0.418]
+### LiveCell all 60sample boundary dice score
+UNETR_sc = [0.382, 0.341, 0.374, 0.199, 0.413, 0.458, 0.517, 0.368]
+UNETR_sam_vit_b = [0.4160795  0.40123135 0.41307628 0.257717   0.4620079  0.46656105
+ 0.56100333 0.40324305]
 UNET = [ 0.469 ,0.501, 0.624, 0.425, 0.532, 0.555, 0.618, 0.451]
-sample_numbers = ['10', '50', '100', 'all']
+sample_numbers = ["A172", "BT474", "BV2", "Huh7", "MCF7", "SHSY5Y", "SkBr3", "SKOV3"]
 ##########
 
-### LiveCell all instance msa
-UNETR_sc = [0.049, 0.076, 0.085, 0.098]
-UNETR_sam_vit_b = [0.200, 0.191, 0.462, 0.196, 0.214, 0.136, 0.612, 0.261]
+### LiveCell all 60sample instance msa
+UNETR_sc = [0.120, 0.092 0.293, 0.073, 0.096, 0.081, 0.516, 0.163]
+UNETR_sam_vit_b = [0.173, 0.141 0.368, 0.169, 0.153, 0.090, 0.556, 0.253]
 UNET = [ 0.194, 0.216, 0.497, 0.277, 0.214, 0.124, 0.565, 0.228]
-sample_numbers = ['10', '50', '100', 'all']
+sample_numbers = ["A172", "BT474", "BV2", "Huh7", "MCF7", "SHSY5Y", "SkBr3", "SKOV3"]
 ##########
-
 
 plt.figure(figsize=(12,4))
 plt.plot(sample_numbers, UNETR_sc, marker='o', linestyle='-', label='UNETR_sc')
 plt.plot(sample_numbers, UNETR_sam_vit_b, marker='o', linestyle='-', label='UNETR_sam_vit_b')
 plt.plot(sample_numbers, UNET, marker='o', linestyle='-', label='UNET')
-plt.title('LiveCell MCF7 instance msa')
-plt.xlabel('number of samples')
-plt.ylabel('dice score')
+plt.title('LiveCell all foreground dice score')
+plt.xlabel('cell type') #number of samples
+plt.ylabel('dice score') #Mean Segmentation Accuracy
 plt.xticks(sample_numbers, labels=sample_numbers)
 for i, y in enumerate(UNETR_sc):
     plt.text(i, y, str(y), ha='center', va='bottom')
@@ -182,4 +206,4 @@ plt.legend()
 
 
 plt.show()
-plt.savefig('/home/nimmahen/code/plots/LiveCell MCF7 instance msa.png')
+plt.savefig('/home/nimmahen/code/plots/LiveCell all foreground dice score.png')
