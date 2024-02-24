@@ -54,7 +54,7 @@ ins_final_list = []
 
 for ind,i in enumerate(cell_types):
 
-    fg_dir = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_livecell_all_60_vit_b/foreground/", i+"*")
+    fg_dir = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_livecell_all_60_vit_l/foreground/", i+"*")
     n = 0 
     fg_dsl = []   
     fg_ds_dict = {}
@@ -67,11 +67,14 @@ for ind,i in enumerate(cell_types):
         #fg_pred_y = np.where(fg_pred_y>.5,1,0) #changed to binarize
         gt_y = imageio.imread(gt_path)
         fg_ds = dice_score(fg_pred_y, gt_y, threshold_gt=0, threshold_seg=None)
+        fg_ds = round(float(fg_ds), 3)
         fg_dsl.append(fg_ds)
         fg_ds_dict.update({filename: fg_ds})
     fg_dsl = sum(fg_dsl)/len(fg_dsl)
+    fg_dsl = round(float(fg_dsl), 3)
     fg_eval_scores[ind] = fg_dsl
     fg_final_list.append(fg_ds_dict)
+
 
     bd_dir = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_livecell_all_60_vit_b/boundaries/", i+"*")
     n = 0 
@@ -87,6 +90,7 @@ for ind,i in enumerate(cell_types):
         gt_y = imageio.imread(gt_path)
         bd_gt = find_boundaries(gt_y)
         bd_ds = dice_score(bd_pred_y, bd_gt, threshold_gt=None, threshold_seg=None)
+        bd_ds = round(bd_ds, 3)
         bd_dsl.append(bd_ds)
         bd_ds_dict.update({filename: bd_ds})
     bd_dsl = sum(bd_dsl)/len(bd_dsl)
@@ -107,6 +111,7 @@ for ind,i in enumerate(cell_types):
         gt_y = imageio.imread(gt_path)
         #gt_y = np.where(gt_y>.5,1,0)
         ins_msa = mean_segmentation_accuracy(ins_pred_y, gt_y)
+        ins_msa = round(ins_msa, 3)
         ins_msal.append(ins_msa)
         ins_msa_dict.update({filename: ins_msa})
     ins_msal = sum(ins_msal)/len(ins_msal)
@@ -116,77 +121,79 @@ for ind,i in enumerate(cell_types):
 
 
 
-#top_5_keys = sorted(final_list[0], key=lambda x: final_list[0][x], reverse=True)[:5]
 fg_all_values = [value for dictionary in fg_final_list for value in dictionary.values()]
 
 # Sort the values and get the top 5
 fg_top_5_values = sorted(fg_all_values, reverse=True)[:5]
 
-# Get the keys corresponding to the top 5 values
-fg_top_5_keys = [key for dictionary in fg_final_list for key, value in dictionary.items() if value in fg_top_5_values]
+# Get the keys corresponding to the top 5 values along with their values
+fg_top_5_items = [{ key, value} for dictionary in fg_final_list for key, value in dictionary.items() if value in fg_top_5_values]
 
-with open(r'/home/nimmahen/code/results/UNETR_sam_last_livecell_all_60_vit_b_foreground_cells.txt', 'w') as fp:
-    for item in fg_top_5_keys:
-        # write each item on a new line
-        fp.write("%s\n" % item)
+# Save the top 5 items with values as a list of dictionaries in a file, separated by commas
+with open('/home/nimmahen/code/results/TOP5.txt', 'w') as fp:
+    # write all items in a single line, separated by commas
+    fp.write(', '.join(map(str, fg_top_5_items)))
 
-with open(r'/home/nimmahen/code/results/UNETR_sam_last_livecell_all_60_vit_b_foreground_score.txt', 'w') as fp:
-    for item in fg_eval_scores:
-        # write each item on a new line
-        fp.write("%s\n" % item)
+
+fg_eval_scores = fg_eval_scores.tolist()
+
+with open('/home/nimmahen/code/results/output_test.txt', 'w') as file:
+    file.write(str(fg_eval_scores))
 
 print('UNETR_sam_last_livecell_all_60_vit_b_foreground_score',fg_eval_scores)
-print(sum(fg_eval_scores)/len(fg_eval_scores))
+print(round((sum(fg_eval_scores)/len(fg_eval_scores)),3))
 
 
 
 
-#top_5_keys = sorted(final_list[0], key=lambda x: final_list[0][x], reverse=True)[:5]
 bd_all_values = [value for dictionary in bd_final_list for value in dictionary.values()]
 
 # Sort the values and get the top 5
 bd_top_5_values = sorted(bd_all_values, reverse=True)[:5]
 
-# Get the keys corresponding to the top 5 values
-bd_top_5_keys = [key for dictionary in bd_final_list for key, value in dictionary.items() if value in bd_top_5_values]
+# Get the keys corresponding to the top 5 values along with their values
+bd_top_5_items = [{ key, value} for dictionary in bd_final_list for key, value in dictionary.items() if value in bd_top_5_values]
 
-with open(r'/home/nimmahen/code/results/UNETR_sam_last_livecell_all_60_vit_b_boundaries_cells.txt', 'w') as fp:
-    for item in bd_top_5_keys:
-        # write each item on a new line
-        fp.write("%s\n" % item)
-
-with open(r'/home/nimmahen/code/results/UNETR_sam_last_livecell_all_60_vit_b_boundaries_score.txt', 'w') as fp:
-    for item in bd_eval_scores:
-        # write each item on a new line
-        fp.write("%s\n" % item)
-
-print('UNETR_sam_last_livecell_all_60_vit_b_boundaries_score',bd_eval_scores)
-print(sum(bd_eval_scores)/len(bd_eval_scores))
+# Save the top 5 items with values as a list of dictionaries in a file, separated by commas
+with open('/home/nimmahen/code/results/TOP5.txt', 'w') as fp:
+    # write all items in a single line, separated by commas
+    fp.write(', '.join(map(str, bd_top_5_items)))
 
 
+bd_eval_scores = bd_eval_scores.tolist()
 
-#top_5_keys = sorted(final_list[0], key=lambda x: final_list[0][x], reverse=True)[:5]
+with open('/home/nimmahen/code/results/output_test.txt', 'w') as file:
+    file.write(str(bd_eval_scores))
+
+print('UNETR_sam_last_livecell_all_60_vit_b_foreground_score',bd_eval_scores)
+print(round((sum(bd_eval_scores)/len(bd_eval_scores)),3))
+
+
+
+
+
+
 ins_all_values = [value for dictionary in ins_final_list for value in dictionary.values()]
 
 # Sort the values and get the top 5
 ins_top_5_values = sorted(ins_all_values, reverse=True)[:5]
 
-# Get the keys corresponding to the top 5 values
-ins_top_5_keys = [key for dictionary in ins_final_list for key, value in dictionary.items() if value in ins_top_5_values]
+# Get the keys corresponding to the top 5 values along with their values
+ins_top_5_items = [{ key, value} for dictionary in ins_final_list for key, value in dictionary.items() if value in ins_top_5_values]
 
-with open(r'/home/nimmahen/code/results/UNETR_sam_last_livecell_all_60_vit_b_instance_cells.txt', 'w') as fp:
-    for item in ins_top_5_keys:
-        # write each item on a new line
-        fp.write("%s\n" % item)
+# Save the top 5 items with values as a list of dictionaries in a file, separated by commas
+with open('/home/nimmahen/code/results/TOP5.txt', 'w') as fp:
+    # write all items in a single line, separated by commas
+    fp.write(', '.join(map(str, ins_top_5_items)))
 
-with open(r'/home/nimmahen/code/results/UNETR_sam_last_livecell_all_60_vit_b_instance_score.txt', 'w') as fp:
-    for item in ins_eval_scores:
-        # write each item on a new line
-        fp.write("%s\n" % item)
 
-print('UNETR_sam_last_livecell_all_60_vit_b_instance_score',ins_eval_scores)
-print(sum(ins_eval_scores)/len(ins_eval_scores))
+ins_eval_scores = ins_eval_scores.tolist()
 
+with open('/home/nimmahen/code/results/output_test.txt', 'w') as file:
+    file.write(str(ins_eval_scores))
+
+print('UNETR_sam_last_livecell_all_60_vit_b_foreground_score',ins_eval_scores)
+print(round((sum(ins_eval_scores)/len(ins_eval_scores)),3))
 
 
     
