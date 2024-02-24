@@ -8,6 +8,7 @@ import sys
 import torch_em
 #from skimage.io import imread
 from elf.evaluation import dice_score
+from elf.evaluation import mean_segmentation_accuracy
 
 #(if your ground truth is not binarised, make sure to put the parameter threshold_gt = 0.)
 
@@ -47,6 +48,9 @@ cell_types = ["sampleA-", "sampleB-","sampleC-"]
 bd_eval_scores = np.zeros(3)
 bd_final_list = []
 
+ins_eval_scores = np.zeros(3)
+ins_final_list = []
+
 
 
 for ind,i in enumerate(cell_types):
@@ -76,29 +80,80 @@ for ind,i in enumerate(cell_types):
     bd_final_list.append(bd_ds_dict)
 
 
+    ins_dir = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/new_cremi_allpersample/instance/", i+"*")
+    n = 0
+    ins_msal = []   
+    ins_msa_dict = {}
+    for ins_pred_seg in glob.glob(ins_dir):
+        filename = os.path.split(ins_pred_seg)[-1]
+        gt_path = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_label/",  filename)
+        
+
+        ins_pred_y = imageio.imread(ins_pred_seg)
+        #pred_y = np.where(pred_y>.5,1,0)
+        gt_y = imageio.imread(gt_path)
+        #gt_y = np.where(gt_y>.5,1,0)
+        ins_msa = mean_segmentation_accuracy(ins_pred_y, gt_y)
+        ins_msal.append(ins_msa)
+        ins_msa_dict.update({filename: ins_msa})
+    ins_msal = sum(ins_msal)/len(ins_msal)
+    ins_eval_scores[ind] = ins_msal
+    ins_final_list.append(ins_msa_dict)
 
 
-#top_5_keys = sorted(final_list[0], key=lambda x: final_list[0][x], reverse=True)[:5]
+
+
 bd_all_values = [value for dictionary in bd_final_list for value in dictionary.values()]
 
 # Sort the values and get the top 5
 bd_top_5_values = sorted(bd_all_values, reverse=True)[:5]
 
-# Get the keys corresponding to the top 5 values
-bd_top_5_keys = [key for dictionary in bd_final_list for key, value in dictionary.items() if value in bd_top_5_values]
+# Get the keys corresponding to the top 5 values along with their values
+bd_top_5_items = [{ key, value} for dictionary in bd_final_list for key, value in dictionary.items() if value in bd_top_5_values]
 
-with open(r'/home/nimmahen/code/results/Unet_new_cremi_allpersample_bd_samples.txt', 'w') as fp:
-    for item in bd_top_5_keys:
-        # write each item on a new line
-        fp.write("%s\n" % item)
+# Save the top 5 items with values as a list of dictionaries in a file, separated by commas
+with open('/home/nimmahen/code/results/TOP5.txt', 'w') as fp:
+    # write all items in a single line, separated by commas
+    fp.write(', '.join(map(str, bd_top_5_items)))
 
-with open(r'/home/nimmahen/code/results/Unet_new_cremi_allpersample_bd_scores.txt', 'w') as fp:
-    for item in bd_eval_scores:
-        # write each item on a new line
-        fp.write("%s\n" % item)
 
-print('Unet_new_cremi_allpersample_bd_scores',bd_eval_scores)
-#print('dict of images', final_list)
+bd_eval_scores = bd_eval_scores.tolist()
+
+with open('/home/nimmahen/code/results/output_test.txt', 'w') as file:
+    file.write(str(bd_eval_scores))
+
+print('UNETR_sam_last_livecell_all_60_vit_b_foreground_score',bd_eval_scores)
+print(round((sum(bd_eval_scores)/len(bd_eval_scores)),3))
+
+
+
+
+
+
+ins_all_values = [value for dictionary in ins_final_list for value in dictionary.values()]
+
+# Sort the values and get the top 5
+ins_top_5_values = sorted(ins_all_values, reverse=True)[:5]
+
+# Get the keys corresponding to the top 5 values along with their values
+ins_top_5_items = [{ key, value} for dictionary in ins_final_list for key, value in dictionary.items() if value in ins_top_5_values]
+
+# Save the top 5 items with values as a list of dictionaries in a file, separated by commas
+with open('/home/nimmahen/code/results/TOP5.txt', 'w') as fp:
+    # write all items in a single line, separated by commas
+    fp.write(', '.join(map(str, ins_top_5_items)))
+
+
+ins_eval_scores = ins_eval_scores.tolist()
+
+with open('/home/nimmahen/code/results/output_test.txt', 'w') as file:
+    file.write(str(ins_eval_scores))
+
+print('UNETR_sam_last_livecell_all_60_vit_b_foreground_score',ins_eval_scores)
+print(round((sum(ins_eval_scores)/len(ins_eval_scores)),3))
+
+
+
 
 
 
