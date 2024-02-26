@@ -2,16 +2,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Your data
-three_models = ["UNETR_sc", "UNETR_sam_vit_b", "UNET"]
+three_models = ["UNETR_sc", "UNETR_sam_vit_b", "UNETR_sam_vit_l" "UNET"]
 
-# #### foreground dice scores
-# eval_scores = [(0.776, 0.774), (0.826, 0.845), (0.882, 0.898)]
+#### foreground dice scores
+eval_scores = [(0.776, 0.774), (0.826, 0.845), (0.801, 0.815), (0.882, 0.898)]
 
-# #### boundaries dice scores
-# eval_scores = [(0.382, 0.394), (0.422, 0.453), (0.498, 0.522)]
+#### boundaries dice scores
+eval_scores = [(0.382, 0.394), (0.422, 0.453), (0.411, 0.404), (0.498, 0.522)]
 
 #### instance msa
-eval_scores = [(0.179, 0.198), (0.238, 0.284), (0.240, 0.289)]
+eval_scores = [(0.179, 0.198), (0.238, 0.284), (0.330, 0.332), (0.240, 0.289)]
 
 # Extracting the data for plotting
 data = np.array(eval_scores)
