@@ -9,6 +9,10 @@ import torch_em
 #from skimage.io import imread
 from elf.evaluation import dice_score
 from elf.evaluation import mean_segmentation_accuracy
+from matplotlib.colors import ListedColormap
+import matplotlib.pyplot as plt
+
+
 
 #(if your ground truth is not binarised, make sure to put the parameter threshold_gt = 0.)
 
@@ -41,6 +45,13 @@ from elf.evaluation import mean_segmentation_accuracy
 #     eps = 1e-7
 #     score = float(nom) / float(denom + eps)
 #     return score
+np.random.seed(42)
+
+def generate_random_colormap(num_colors):
+    np.random.seed(42)
+
+    colors = np.random.rand(num_colors, 3)
+    return ListedColormap(colors)
 
 cell_types = ["sampleA-", "sampleB-","sampleC-"]
 
@@ -56,7 +67,7 @@ ins_final_list = []
 for ind,i in enumerate(cell_types):
 
 
-    bd_dir = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_10persample_vit_b/boundaries/", i+"*")
+    bd_dir = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_l/boundaries/", i+"*")
     n = 0 
     bd_dsl = []   
     bd_ds_dict = {}
@@ -81,7 +92,7 @@ for ind,i in enumerate(cell_types):
     bd_final_list.append(bd_ds_dict)
 
 
-    ins_dir = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_10persample_vit_b/instance/", i+"*")
+    ins_dir = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_l/instance/", i+"*")
     n = 0
     ins_msal = []   
     ins_msa_dict = {}
@@ -109,24 +120,26 @@ for ind,i in enumerate(cell_types):
 bd_all_values = [value for dictionary in bd_final_list for value in dictionary.values()]
 
 # Sort the values and get the top 5
-bd_top_5_values = sorted(bd_all_values, reverse=True)[:5]
+bd_top_5_values = sorted(bd_all_values, reverse=True)[:3]
 
 # Get the keys corresponding to the top 5 values along with their values
 bd_top_5_items = [{ key, value} for dictionary in bd_final_list for key, value in dictionary.items() if value in bd_top_5_values]
-
-# Save the top 5 items with values as a list of dictionaries in a file, separated by commas
-with open('/home/nimmahen/code/results/last_results/UNETR_sam_last_cremi_10persample_vit_b_boundaries_items.txt', 'w') as fp:
-    # write all items in a single line, separated by commas
-    fp.write(', '.join(map(str, bd_top_5_items)))
+bd_top_5_keys = [key for dictionary in bd_final_list for key, value in dictionary.items() if value in bd_top_5_values]
 
 
-bd_eval_scores = bd_eval_scores.tolist()
+# # Save the top 5 items with values as a list of dictionaries in a file, separated by commas
+# with open('/home/nimmahen/code/results/last_results/UNETR_sam_last_cremi_30persample_vit_l_boundaries_items.txt', 'w') as fp:
+#     # write all items in a single line, separated by commas
+#     fp.write(', '.join(map(str, bd_top_5_items)))
 
-with open('/home/nimmahen/code/results/last_results/UNETR_sam_last_cremi_10persample_vit_b_boundaries_scores.txt', 'w') as file:
-    file.write(str(bd_eval_scores))
 
-print('UNETR_sam_last_cremi_10persample_vit_b_boundaries_scores',bd_eval_scores)
-print(round((sum(bd_eval_scores)/len(bd_eval_scores)),3))
+# bd_eval_scores = bd_eval_scores.tolist()
+
+# with open('/home/nimmahen/code/results/last_results/UNETR_sam_last_cremi_30persample_vit_l_boundaries_scores.txt', 'w') as file:
+#     file.write(str(bd_eval_scores))
+
+# print('UNETR_sam_last_cremi_30persample_vit_l_boundaries_scores',bd_eval_scores)
+# print(round((sum(bd_eval_scores)/len(bd_eval_scores)),3))
 
 
 
@@ -136,89 +149,206 @@ print(round((sum(bd_eval_scores)/len(bd_eval_scores)),3))
 ins_all_values = [value for dictionary in ins_final_list for value in dictionary.values()]
 
 # Sort the values and get the top 5
-ins_top_5_values = sorted(ins_all_values, reverse=True)[:5]
+ins_top_5_values = sorted(ins_all_values, reverse=True)[:3]
 
 # Get the keys corresponding to the top 5 values along with their values
 ins_top_5_items = [{ key, value} for dictionary in ins_final_list for key, value in dictionary.items() if value in ins_top_5_values]
+ins_top_5_keys = [key for dictionary in ins_final_list for key, value in dictionary.items() if value in ins_top_5_values]
 
-# Save the top 5 items with values as a list of dictionaries in a file, separated by commas
-with open('/home/nimmahen/code/results/last_results/UNETR_sam_last_cremi_10persample_vit_b_instance_items.txt', 'w') as fp:
-    # write all items in a single line, separated by commas
-    fp.write(', '.join(map(str, ins_top_5_items)))
-
-
-ins_eval_scores = ins_eval_scores.tolist()
-
-with open('/home/nimmahen/code/results/last_results/UNETR_sam_last_cremi_10persample_vit_b_instance_scores.txt', 'w') as file:
-    file.write(str(ins_eval_scores))
-
-print('UNETR_sam_last_cremi_10persample_vit_b_instance_scores',ins_eval_scores)
-print(round((sum(ins_eval_scores)/len(ins_eval_scores)),3))
+# # Save the top 5 items with values as a list of dictionaries in a file, separated by commas
+# with open('/home/nimmahen/code/results/last_results/UNETR_sam_last_cremi_30persample_vit_l_instance_items.txt', 'w') as fp:
+#     # write all items in a single line, separated by commas
+#     fp.write(', '.join(map(str, ins_top_5_items)))
 
 
+# ins_eval_scores = ins_eval_scores.tolist()
 
+# with open('/home/nimmahen/code/results/last_results/UNETR_sam_last_cremi_30persample_vit_l_instance_scores.txt', 'w') as file:
+#     file.write(str(ins_eval_scores))
 
+# print('UNETR_sam_last_cremi_30persample_vit_l_instance_scores',ins_eval_scores)
+# print(round((sum(ins_eval_scores)/len(ins_eval_scores)),3))
 
-
-
+###### boundary
+n = 6
+fig, ax = plt.subplots(len(bd_top_5_keys), n, figsize=(30, 15), gridspec_kw={'wspace': 0.3, 'hspace': 0.3})
 
 
 
-
-
-
-# print(dsl)
-# print("avg dice score", sum(dsl)/len(dsl))
-# import matplotlib.pyplot as plt
-# n = 5 
-# fig, ax = plt.subplots(5, n, figsize=(30, 15))
-
-
-# for i, id in enumerate(top_5_keys):
-#     cell_type = id.split("_")[0]
+for i, id in enumerate(bd_top_5_keys):
+    cell_type = id.split("_")[0]
     
-#     seg_unetr = os.path.join("/scratch/users/menayat/models/cremi-unetr/predictions/boundaries/", id)
-#     seg_swinunetr = os.path.join("/scratch/users/menayat/models/cremi-swin/predictions/boundaries/", id)
-#     seg_unet = os.path.join("/scratch/users/menayat/models/cremi-unet/predictions/boundaries/", id)
-#     gt_pth = os.path.join("/scratch/users/menayat/data/cremi/test_label/", id)# changed from corrected file
-#     img_pth = os.path.join("/scratch/users/menayat/data/cremi/test_image/",id)  ### changed from test/val images
+    UNETR_sam_vit_l = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_l/boundaries/", id)
+    UNETR_sam_vit_b = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_b/boundaries/", id)
+    UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_cremi_30persample/boundaries/", id)
+    UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/last_cremi_30persample/boundaries/", id)
 
-#     pred_unet = imread(seg_unet)
-#     pred_swinunetr = imread(seg_swinunetr)
-#     pred_unetr = imread(seg_unetr)
-#     gt = imread(gt_pth)
-#     #gt = find_boundaries(gt_y,mode='thick').astype(np.uint8)
-#     raw = imread(img_pth)
-#     #breakpoint()
+    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_label/", id)
+    img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_image/",id)
+
+    pred_UNETR_sam_vit_l = imageio.imread(UNETR_sam_vit_l)
+    pred_UNETR_sam_vit_b = imageio.imread(UNETR_sam_vit_b)
+    pred_UNETR_sc = imageio.imread(UNETR_sc)
+    pred_UNET = imageio.imread(UNET)
+    gt = imageio.imread(gt_pth)
+    bd_gt = find_boundaries(gt)
+    raw = imageio.imread(img_pth)
+
+   
+
+   
+    # import numpy as np
+
+    # # Assuming pred_UNETR_sam_vit_l, pred_UNETR_sam_vit_b, pred_UNETR_sc, pred_UNET are your model predictions
+    # predictions = [pred_UNETR_sam_vit_l, pred_UNETR_sam_vit_b, pred_UNETR_sc, pred_UNET]
+
+    # # Assign unique colors to each model
+    # colors = ['red', 'green', 'blue', 'purple']
+
+    # # Create an empty array to store the composite image
+    # composite_image = np.zeros_like(predictions[0], dtype=np.uint8)
+
+    # # Combine predictions with different colors
+    # for i, prediction in enumerate(predictions):
+    #     composite_image[prediction != 0] = np.array(plt.cm.colors.to_rgba(colors[i])[:3]) * 255
+
+    # # Display the composite image
+    # plt.imshow(composite_image)
+    # plt.show()
+
+    # fig.savefig('/home/nimmahen/code/Figures/cremi_allpersample_boundary_alltogether.png')
+    # breakpoint()
+
+
+    # pred_UNETR_sam_vit_l_num_classes = len(np.unique(pred_UNETR_sam_vit_l))
+    # pred_UNETR_sam_vit_l_random_cmap = generate_random_colormap(pred_UNETR_sam_vit_l_num_classes)
+
+    # pred_UNETR_sam_vit_b_num_classes = len(np.unique(pred_UNETR_sam_vit_b))
+    # pred_UNETR_sam_vit_b_random_cmap = generate_random_colormap(pred_UNETR_sam_vit_b_num_classes)
+
+    # pred_UNETR_sc_num_classes = len(np.unique(pred_UNETR_sc))
+    # pred_UNETR_sc_random_cmap = generate_random_colormap(pred_UNETR_sc_num_classes)
+
+    # pred_UNET_num_classes = len(np.unique(pred_UNET))
+    # pred_UNET_random_cmap = generate_random_colormap(pred_UNET_num_classes)
     
-#     # if i == n//2:
-#     #     ax[0][i].set_title("raw data",fontsize=20,loc='center')
-#     #     ax[1][i].set_title("unetr prediction",fontsize=20,loc='center')
-#     #     ax[2][i].set_title("swin prediction",fontsize=20,loc='center')
-#     #     ax[3][i].set_title("unet prediction",fontsize=20,loc='center')
-#     #     ax[4][i].set_title("ground truth",fontsize=20,loc='center')
-#     ax[0][i].imshow( raw, cmap='Blues')
-#     ax[1][i].imshow(pred_unetr.squeeze())
-#     ax[2][i].imshow(pred_swinunetr.squeeze())
-#     ax[3][i].imshow(pred_unet.squeeze())
-#     ax[4][i].imshow(gt.squeeze())
-#     #ax[i].imshow(img_new)\n",
 
-# cell_name =[]
-# for i in top_5_keys:
-#         cell = i.split(".")[0]
-#         cell_name.append(cell)
-# for axs, cell in zip(ax[0], cell_name):
-#     axs.set_title(f'{cell}', size=18)
+    # ax[0][i].imshow( raw, cmap='gray')
+    # ax[1][i].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
+    # ax[2][i].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap=pred_UNETR_sam_vit_b_random_cmap)
+    # ax[3][i].imshow(pred_UNETR_sc.squeeze(), cmap=pred_UNETR_sc_random_cmap)
+    # ax[4][i].imshow(pred_UNET.squeeze(),cmap=pred_UNET_random_cmap)
+    # ax[5][i].imshow(gt.squeeze(), cmap='viridis')
 
-# for ax, model in zip(ax[:, 0], ['Raw', 'UNETR', 'SWIN', 'UNET', 'Ground Truth']):
-#     ax.set_ylabel(model, size=18)
+    #ax[i].imshow(img_new)\n",
+    ax[i][0].imshow(raw, cmap='gray')
+    ax[i][1].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap='viridis')
+    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap='plasma')
+    ax[i][3].imshow(pred_UNETR_sc.squeeze(), cmap='inferno')
+    ax[i][4].imshow(pred_UNET.squeeze(), cmap='magma')
+    ax[i][5].imshow(bd_gt.squeeze(), cmap='viridis')
 
-# # axs[0, 1].annotate('Segmentation trained on A172', (0.5, 1), xytext=(0, 30),
-# #                    textcoords='offset points', xycoords='axes fraction',
-# #                    ha='center', va='bottom', size=20)
-# plt.show()
-# fig.savefig('/usr/users/menayat/code-torch-em/UNETR_cremi.png')
+    for j in range(n):
+            ax[i][j].set_xticks([])
+            ax[i][j].set_yticks([])
+            ax[i][j].set_xticklabels([])
+            ax[i][j].set_yticklabels([])
+
+
+
+
+
+model_names = ['Raw', 'UNETR_sam_vit_l', 'UNETR_sam_vit_b', 'UNETR_sc', 'UNET', 'Ground Truth']
+for ax, model_name in zip(ax[0], model_names):
+    ax.set_title(model_name, size=18)
+
+
+# for ax, key in zip(ax[:, 0], ins_top_5_keys):
+#     ax.set_ylabel(key.split(".")[0], size=18)
+
+
+plt.show()
+fig.savefig('/home/nimmahen/code/Figures/cremi_30persample_boundary.png')
+
+
+
+
+
+
+#######instance
+
+n = 6
+fig, ax = plt.subplots(len(ins_top_5_keys), n, figsize=(30, 15), gridspec_kw={'wspace': 0.3, 'hspace': 0.3})
+
+
+
+for i, id in enumerate(ins_top_5_keys):
+    cell_type = id.split("_")[0]
+    
+    UNETR_sam_vit_l = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_l/instance/", id)
+    UNETR_sam_vit_b = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_b/instance/", id)
+    UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_cremi_30persample/instance/", id)
+    UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/last_cremi_30persample/instance/", id)
+
+    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_label/", id)
+    img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_image/",id)
+
+    pred_UNETR_sam_vit_l = imageio.imread(UNETR_sam_vit_l)
+    pred_UNETR_sam_vit_b = imageio.imread(UNETR_sam_vit_b)
+    pred_UNETR_sc = imageio.imread(UNETR_sc)
+    pred_UNET = imageio.imread(UNET)
+    gt = imageio.imread(gt_pth)
+    raw = imageio.imread(img_pth)
+
+    pred_UNETR_sam_vit_l_num_classes = len(np.unique(pred_UNETR_sam_vit_l))
+    pred_UNETR_sam_vit_l_random_cmap = generate_random_colormap(pred_UNETR_sam_vit_l_num_classes)
+
+    pred_UNETR_sam_vit_b_num_classes = len(np.unique(pred_UNETR_sam_vit_b))
+    pred_UNETR_sam_vit_b_random_cmap = generate_random_colormap(pred_UNETR_sam_vit_b_num_classes)
+
+    pred_UNETR_sc_num_classes = len(np.unique(pred_UNETR_sc))
+    pred_UNETR_sc_random_cmap = generate_random_colormap(pred_UNETR_sc_num_classes)
+
+    pred_UNET_num_classes = len(np.unique(pred_UNET))
+    pred_UNET_random_cmap = generate_random_colormap(pred_UNET_num_classes)
+    
+
+    # ax[0][i].imshow( raw, cmap='gray')
+    # ax[1][i].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
+    # ax[2][i].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap=pred_UNETR_sam_vit_b_random_cmap)
+    # ax[3][i].imshow(pred_UNETR_sc.squeeze(), cmap=pred_UNETR_sc_random_cmap)
+    # ax[4][i].imshow(pred_UNET.squeeze(),cmap=pred_UNET_random_cmap)
+    # ax[5][i].imshow(gt.squeeze(), cmap='viridis')
+
+    #ax[i].imshow(img_new)\n",
+    ax[i][0].imshow(raw, cmap='gray')
+    ax[i][1].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
+    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
+    ax[i][3].imshow(pred_UNETR_sc.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
+    ax[i][4].imshow(pred_UNET.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
+    ax[i][5].imshow(gt.squeeze(), cmap='viridis')
+
+    for j in range(n):
+            ax[i][j].set_xticks([])
+            ax[i][j].set_yticks([])
+            ax[i][j].set_xticklabels([])
+            ax[i][j].set_yticklabels([])
+
+
+
+
+
+model_names = ['Raw', 'UNETR_sam_vit_l', 'UNETR_sam_vit_b', 'UNETR_sc', 'UNET', 'Ground Truth']
+for ax, model_name in zip(ax[0], model_names):
+    ax.set_title(model_name, size=18)
+
+
+# for ax, key in zip(ax[:, 0], ins_top_5_keys):
+#     ax.set_ylabel(key.split(".")[0], size=18)
+
+
+plt.show()
+fig.savefig('/home/nimmahen/code/Figures/cremi_30persample_instance.png')
     
 
 
