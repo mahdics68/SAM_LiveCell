@@ -232,7 +232,7 @@ for i, id in enumerate(fg_top_5_keys):
     UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_livecell_all/foreground/", id)
     UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/new_livecell_all/foreground/", id)
 
-    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/annotations/livecell_test_images/", id)
+    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/annotations/livecell_test_images/",cell_type, id)
     img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/images/livecell_test_images/",id)
 
     pred_UNETR_sam_vit_l = imageio.imread(UNETR_sam_vit_l)
@@ -240,7 +240,6 @@ for i, id in enumerate(fg_top_5_keys):
     pred_UNETR_sc = imageio.imread(UNETR_sc)
     pred_UNET = imageio.imread(UNET)
     gt = imageio.imread(gt_pth)
-    bd_gt = find_boundaries(gt)
     raw = imageio.imread(img_pth)
 
     
@@ -249,7 +248,7 @@ for i, id in enumerate(fg_top_5_keys):
     ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap='plasma')
     ax[i][3].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap='viridis')
     ax[i][4].imshow(pred_UNETR_sc.squeeze(), cmap='inferno')
-    ax[i][5].imshow(bd_gt.squeeze(), cmap='viridis')
+    ax[i][5].imshow(gt.squeeze(), cmap='viridis')
 
     for j in range(n):
             ax[i][j].set_xticks([])
@@ -289,7 +288,7 @@ for i, id in enumerate(bd_top_5_keys):
     UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_livecell_all/boundaries/", id)
     UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/new_livecell_all/boundaries/", id)
 
-    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/annotations/livecell_test_images/", id)
+    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/annotations/livecell_test_images/",cell_type, id)
     img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/images/livecell_test_images/",id)
 
     pred_UNETR_sam_vit_l = imageio.imread(UNETR_sam_vit_l)
@@ -346,7 +345,7 @@ for i, id in enumerate(ins_top_5_keys):
     UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_livecell_all/instance/", id)
     UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/new_livecell_all/instance/", id)
 
-    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/annotations/livecell_test_images/", id)
+    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/annotations/livecell_test_images/",cell_type, id)
     img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/images/livecell_test_images/",id)
 
     pred_UNETR_sam_vit_l = imageio.imread(UNETR_sam_vit_l)
