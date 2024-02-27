@@ -52,13 +52,13 @@ def generate_random_colormap(num_colors):
 #     return score
 
 cell_types =    ["A172", "BT474","BV2", "Huh7", "MCF7", "SHSY5Y", "SkBr3", "SKOV3"] #["MCF7"]
-fg_eval_scores = np.zeros(1)
+fg_eval_scores = np.zeros(8)
 fg_final_list = []
 
-bd_eval_scores = np.zeros(1)
+bd_eval_scores = np.zeros(8)
 bd_final_list = []
 
-ins_eval_scores = np.zeros(1)
+ins_eval_scores = np.zeros(8)
 ins_final_list = []
 
 for ind,i in enumerate(cell_types):
@@ -144,19 +144,19 @@ fg_top_5_items = [{ key, value} for dictionary in fg_final_list for key, value i
 fg_top_5_keys = [key for dictionary in fg_final_list for key, value in dictionary.items() if value in fg_top_5_values]
 
 
-# Save the top 5 items with values as a list of dictionaries in a file, separated by commas
-with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_foreground_items.txt', 'w') as fp:
-    # write all items in a single line, separated by commas
-    fp.write(', '.join(map(str, fg_top_5_items)))
+# # Save the top 5 items with values as a list of dictionaries in a file, separated by commas
+# with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_foreground_items.txt', 'w') as fp:
+#     # write all items in a single line, separated by commas
+#     fp.write(', '.join(map(str, fg_top_5_items)))
 
 
-fg_eval_scores = fg_eval_scores.tolist()
+# fg_eval_scores = fg_eval_scores.tolist()
 
-with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_foreground_scores.txt', 'w') as file:
-    file.write(str(fg_eval_scores))
+# with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_foreground_scores.txt', 'w') as file:
+#     file.write(str(fg_eval_scores))
 
-print('UNETR_sam_last_livecell_MCF7_all_vit_l_foreground_scores',fg_eval_scores)
-print(round((sum(fg_eval_scores)/len(fg_eval_scores)),3))
+# print('UNETR_sam_last_livecell_MCF7_all_vit_l_foreground_scores',fg_eval_scores)
+# print(round((sum(fg_eval_scores)/len(fg_eval_scores)),3))
 
 
 
@@ -173,19 +173,19 @@ bd_top_5_items = [{ key, value} for dictionary in bd_final_list for key, value i
 bd_top_5_keys = [key for dictionary in bd_final_list for key, value in dictionary.items() if value in bd_top_5_values]
 
 
-# Save the top 5 items with values as a list of dictionaries in a file, separated by commas
-with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_boundaries_items.txt', 'w') as fp:
-    # write all items in a single line, separated by commas
-    fp.write(', '.join(map(str, bd_top_5_items)))
+# # Save the top 5 items with values as a list of dictionaries in a file, separated by commas
+# with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_boundaries_items.txt', 'w') as fp:
+#     # write all items in a single line, separated by commas
+#     fp.write(', '.join(map(str, bd_top_5_items)))
 
 
-bd_eval_scores = bd_eval_scores.tolist()
+# bd_eval_scores = bd_eval_scores.tolist()
 
-with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_boundaries_scores.txt', 'w') as file:
-    file.write(str(bd_eval_scores))
+# with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_boundaries_scores.txt', 'w') as file:
+#     file.write(str(bd_eval_scores))
 
-print('UNETR_sam_last_livecell_MCF7_all_vit_l_boundaries_scores',bd_eval_scores)
-print(round((sum(bd_eval_scores)/len(bd_eval_scores)),3))
+# print('UNETR_sam_last_livecell_MCF7_all_vit_l_boundaries_scores',bd_eval_scores)
+# print(round((sum(bd_eval_scores)/len(bd_eval_scores)),3))
 
 
 
@@ -202,19 +202,19 @@ ins_top_5_items = [{ key, value} for dictionary in ins_final_list for key, value
 ins_top_5_keys = [key for dictionary in ins_final_list for key, value in dictionary.items() if value in ins_top_5_values]
 
 
-# Save the top 5 items with values as a list of dictionaries in a file, separated by commas
-with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_instance_items.txt', 'w') as fp:
-    # write all items in a single line, separated by commas
-    fp.write(', '.join(map(str, ins_top_5_items)))
+# # Save the top 5 items with values as a list of dictionaries in a file, separated by commas
+# with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_instance_items.txt', 'w') as fp:
+#     # write all items in a single line, separated by commas
+#     fp.write(', '.join(map(str, ins_top_5_items)))
 
 
-ins_eval_scores = ins_eval_scores.tolist()
+# ins_eval_scores = ins_eval_scores.tolist()
 
-with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_instance_scores.txt', 'w') as file:
-    file.write(str(ins_eval_scores))
+# with open('/home/nimmahen/code/results/UNETR_sam_last_livecell_MCF7_all_vit_l_instance_scores.txt', 'w') as file:
+#     file.write(str(ins_eval_scores))
 
-print('UNETR_sam_last_livecell_MCF7_all_vit_l_instance_scores',ins_eval_scores)
-print(round((sum(ins_eval_scores)/len(ins_eval_scores)),3))
+# print('UNETR_sam_last_livecell_MCF7_all_vit_l_instance_scores',ins_eval_scores)
+# print(round((sum(ins_eval_scores)/len(ins_eval_scores)),3))
 
 
     
@@ -232,8 +232,8 @@ for i, id in enumerate(fg_top_5_keys):
     UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_livecell_all/foreground/", id)
     UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/new_livecell_all/foreground/", id)
 
-    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_label/", id)
-    img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_image/",id)
+    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/annotations/livecell_test_images/", id)
+    img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/images/livecell_test_images/",id)
 
     pred_UNETR_sam_vit_l = imageio.imread(UNETR_sam_vit_l)
     pred_UNETR_sam_vit_b = imageio.imread(UNETR_sam_vit_b)
@@ -289,8 +289,8 @@ for i, id in enumerate(bd_top_5_keys):
     UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_livecell_all/boundaries/", id)
     UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/new_livecell_all/boundaries/", id)
 
-    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_label/", id)
-    img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_image/",id)
+    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/annotations/livecell_test_images/", id)
+    img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/images/livecell_test_images/",id)
 
     pred_UNETR_sam_vit_l = imageio.imread(UNETR_sam_vit_l)
     pred_UNETR_sam_vit_b = imageio.imread(UNETR_sam_vit_b)
@@ -302,9 +302,9 @@ for i, id in enumerate(bd_top_5_keys):
 
     ax[i][0].imshow(raw, cmap='gray')
     ax[i][1].imshow(pred_UNET.squeeze(), cmap='viridis')
-    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap='viridis')
+    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap='cividis')
     ax[i][3].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap='viridis')
-    ax[i][4].imshow(pred_UNETR_sc.squeeze(), cmap='viridis')
+    ax[i][4].imshow(pred_UNETR_sc.squeeze(), cmap='cividis')
     ax[i][5].imshow(bd_gt.squeeze(), cmap='viridis')
 
     for j in range(n):
@@ -346,8 +346,8 @@ for i, id in enumerate(ins_top_5_keys):
     UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_livecell_all/instance/", id)
     UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/new_livecell_all/instance/", id)
 
-    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_label/", id)
-    img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_image/",id)
+    gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/annotations/livecell_test_images/", id)
+    img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/livecell/images/livecell_test_images/",id)
 
     pred_UNETR_sam_vit_l = imageio.imread(UNETR_sam_vit_l)
     pred_UNETR_sam_vit_b = imageio.imread(UNETR_sam_vit_b)
@@ -369,14 +369,6 @@ for i, id in enumerate(ins_top_5_keys):
     pred_UNET_random_cmap = generate_random_colormap(pred_UNET_num_classes)
     
 
-    # ax[0][i].imshow( raw, cmap='gray')
-    # ax[1][i].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
-    # ax[2][i].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap=pred_UNETR_sam_vit_b_random_cmap)
-    # ax[3][i].imshow(pred_UNETR_sc.squeeze(), cmap=pred_UNETR_sc_random_cmap)
-    # ax[4][i].imshow(pred_UNET.squeeze(),cmap=pred_UNET_random_cmap)
-    # ax[5][i].imshow(gt.squeeze(), cmap='viridis')
-
-    #ax[i].imshow(img_new)\n",
     ax[i][0].imshow(raw, cmap='gray')
     ax[i][1].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
     ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
