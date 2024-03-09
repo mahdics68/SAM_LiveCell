@@ -13,43 +13,24 @@ from matplotlib.colors import ListedColormap
 
 np.random.seed(42)
 
-def generate_random_colormap(num_colors):
+# def generate_random_colormap(num_colors):
+#     np.random.seed(42)
+
+#     colors = np.random.rand(num_colors, 3)
+#     return ListedColormap(colors)
+
+def generate_random_colormap(num_colors, background_index=0):
     np.random.seed(42)
 
-    colors = np.random.rand(num_colors, 3)
+    # Generate random colors excluding the background color for index 0
+    colors = np.random.rand(num_colors - 1, 3)
+
+    # Insert a placeholder color for the background index
+    colors = np.insert(colors, background_index, [0, 0, 0], axis=0)
+
     return ListedColormap(colors)
 
-# (if your ground truth is not binarised, make sure to put the parameter threshold_gt = 0.
 
-
-# def dice_score(segmentation, groundtruth, threshold_seg=None, threshold_gt=None):
-#     """ Compute the dice score between binarized segmentation and ground-truth.
-#     Arguments:
-#         segmentation [np.ndarray] - candidate segmentation to evaluate
-#         groundtruth [np.ndarray] - groundtruth
-#         threshold_seg [float] - the threshold applied to the segmentation.
-#             If None the segmentation is not thresholded.
-#         threshold_gt [float] - the threshold applied to the ground-truth.
-#             If None the ground-truth is not thresholded.
-#     Returns:
-#         float - the dice score
-#     """
-#     assert segmentation.shape == groundtruth.shape, f"{segmentation.shape}, {groundtruth.shape}"
-#     if threshold_seg is None:
-#         seg = segmentation
-#     else:
-#         seg = segmentation > threshold_seg
-#     if threshold_gt is None:
-#         gt = groundtruth
-#     else:
-#         gt = groundtruth > threshold_gt
-
-#     nom = 2 * np.sum(gt * seg)
-#     denom = np.sum(gt) + np.sum(seg)
-
-#     eps = 1e-7
-#     score = float(nom) / float(denom + eps)
-#     return score
 
 cell_types =    ["A172", "BT474","BV2", "Huh7", "MCF7", "SHSY5Y", "SkBr3", "SKOV3"] #["MCF7"]
 fg_eval_scores = np.zeros(8)
@@ -134,14 +115,27 @@ for ind,i in enumerate(cell_types):
 
 
 
-fg_all_values = [value for dictionary in fg_final_list for value in dictionary.values()]
+# fg_all_values = [value for dictionary in fg_final_list for value in dictionary.values()]
 
-# Sort the values and get the top 5
-fg_top_5_values = sorted(fg_all_values, reverse=True)[:3]
+# # Sort the values and get the top 5
+# fg_top_5_values = sorted(fg_all_values, reverse=True)[:3]
 
-# Get the keys corresponding to the top 5 values along with their values
-fg_top_5_items = [{ key, value} for dictionary in fg_final_list for key, value in dictionary.items() if value in fg_top_5_values]
-fg_top_5_keys = [key for dictionary in fg_final_list for key, value in dictionary.items() if value in fg_top_5_values]
+# # Get the keys corresponding to the top 5 values along with their values
+# fg_top_5_items = [{key: value} for dictionary in fg_final_list for key, value in dictionary.items() if value in fg_top_5_values]
+# fg_top_5_keys = [list(item.keys())[0] for item in fg_top_5_items]
+
+
+
+# Assuming fg_final_list is a list of dictionaries
+fg_top_3_values = sorted(fg_final_list, key=lambda x: list(x.values()), reverse=True)[:3]
+
+# Extracting top 3 keys and values
+fg_top_3_keys = [list(d.keys())[0] for d in fg_top_3_values]
+fg_top_3_values = [list(d.values())[0] for d in fg_top_3_values]
+
+
+
+#fg_top_5_keys = [key for dictionary in fg_final_list for key, value in dictionary.items() if value in fg_top_5_values]
 
 
 # # Save the top 5 items with values as a list of dictionaries in a file, separated by commas
@@ -163,14 +157,22 @@ fg_top_5_keys = [key for dictionary in fg_final_list for key, value in dictionar
 
 
 
-bd_all_values = [value for dictionary in bd_final_list for value in dictionary.values()]
+# bd_all_values = [value for dictionary in bd_final_list for value in dictionary.values()]
 
-# Sort the values and get the top 5
-bd_top_5_values = sorted(bd_all_values, reverse=True)[:3]
+# # Sort the values and get the top 5
+# bd_top_5_values = sorted(bd_all_values, reverse=True)[:3]
 
-# Get the keys corresponding to the top 5 values along with their values
-bd_top_5_items = [{ key, value} for dictionary in bd_final_list for key, value in dictionary.items() if value in bd_top_5_values]
-bd_top_5_keys = [key for dictionary in bd_final_list for key, value in dictionary.items() if value in bd_top_5_values]
+# # Get the keys corresponding to the top 5 values along with their values
+# bd_top_5_items = [{ key, value} for dictionary in bd_final_list for key, value in dictionary.items() if value in bd_top_5_values]
+# bd_top_5_keys = [key for dictionary in bd_final_list for key, value in dictionary.items() if value in bd_top_5_values]
+
+
+
+bd_top_3_values = sorted(bd_final_list, key=lambda x: list(x.values()), reverse=True)[:3]
+
+# Extracting top 3 keys and values
+bd_top_3_keys = [list(d.keys())[0] for d in bd_top_3_values]
+bd_top_3_values = [list(d.values())[0] for d in bd_top_3_values]
 
 
 # # Save the top 5 items with values as a list of dictionaries in a file, separated by commas
@@ -192,14 +194,22 @@ bd_top_5_keys = [key for dictionary in bd_final_list for key, value in dictionar
 
 
 
-ins_all_values = [value for dictionary in ins_final_list for value in dictionary.values()]
+# ins_all_values = [value for dictionary in ins_final_list for value in dictionary.values()]
 
-# Sort the values and get the top 5
-ins_top_5_values = sorted(ins_all_values, reverse=True)[:3]
+# # Sort the values and get the top 5
+# ins_top_5_values = sorted(ins_all_values, reverse=True)[:3]
 
-# Get the keys corresponding to the top 5 values along with their values
-ins_top_5_items = [{ key, value} for dictionary in ins_final_list for key, value in dictionary.items() if value in ins_top_5_values]
-ins_top_5_keys = [key for dictionary in ins_final_list for key, value in dictionary.items() if value in ins_top_5_values]
+# # Get the keys corresponding to the top 5 values along with their values
+# ins_top_5_items = [{ key, value} for dictionary in ins_final_list for key, value in dictionary.items() if value in ins_top_5_values]
+# ins_top_5_keys = [key for dictionary in ins_final_list for key, value in dictionary.items() if value in ins_top_5_values]
+
+
+
+ins_top_3_values = sorted(ins_final_list, key=lambda x: list(x.values()), reverse=True)[:3]
+
+# Extracting top 3 keys and values
+ins_top_3_keys = [list(d.keys())[0] for d in ins_top_3_values]
+ins_top_3_values = [list(d.values())[0] for d in ins_top_3_values]
 
 
 # # Save the top 5 items with values as a list of dictionaries in a file, separated by commas
@@ -218,13 +228,16 @@ ins_top_5_keys = [key for dictionary in ins_final_list for key, value in diction
 
 
     
-##########foreground
+#########foreground
 n = 6
-fig, ax = plt.subplots(len(fg_top_5_keys), n, figsize=(30, 15), gridspec_kw={'wspace': 0.3, 'hspace': 0.3})
+fig, ax = plt.subplots(len(fg_top_3_keys), n, figsize=(45, 20), gridspec_kw={'wspace': 0.1, 'hspace': 0.1})
+if len(fg_top_3_keys) == 1:
+    ax = np.atleast_2d(ax)
 
 
 
-for i, id in enumerate(fg_top_5_keys):
+
+for i, id in enumerate(fg_top_3_keys):
     cell_type = id.split("_")[0]
     
     UNETR_sam_vit_l = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_livecell_all_vit_l/foreground/", id)
@@ -240,13 +253,18 @@ for i, id in enumerate(fg_top_5_keys):
     pred_UNETR_sc = imageio.imread(UNETR_sc)
     pred_UNET = imageio.imread(UNET)
     gt = imageio.imread(gt_pth)
+    gt = np.where(gt>.5,1,0) #### treshhold for plotting
+
     raw = imageio.imread(img_pth)
 
+    vmin = np.percentile(raw,5)  
+    vmax = np.percentile(raw, 95)
+
     
-    ax[i][0].imshow(raw, cmap='gray')
-    ax[i][1].imshow(pred_UNET.squeeze(), cmap='magma')
-    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap='plasma')
-    ax[i][3].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap='viridis')
+    ax[i][0].imshow(raw, cmap='gray', vmin=vmin, vmax=vmax)
+    ax[i][1].imshow(pred_UNET.squeeze(), cmap='inferno')
+    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap='inferno')
+    ax[i][3].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap='inferno')
     ax[i][4].imshow(pred_UNETR_sc.squeeze(), cmap='inferno')
     ax[i][5].imshow(gt.squeeze(), cmap='viridis')
 
@@ -265,22 +283,26 @@ for ax, model_name in zip(ax[0], model_names):
     ax.set_title(model_name, size=18)
 
 
-# for ax, key in zip(ax[:, 0], ins_top_5_keys):
-#     ax.set_ylabel(key.split(".")[0], size=18)
+# # for ax, key in zip(ax[:, 0], ins_top_5_keys):
+# #     ax.set_ylabel(key.split(".")[0], size=18)
 
 
 plt.show()
-fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_foreground.png')
-
+fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_foreground.png', dpi=300)
+fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_foreground.pdf', dpi=300)
+fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_foreground.svg', dpi=300)
 
 
 ############## boundary
 n = 6
-fig, ax = plt.subplots(len(bd_top_5_keys), n, figsize=(30, 15), gridspec_kw={'wspace': 0.3, 'hspace': 0.3})
+fig, ax = plt.subplots(len(bd_top_3_keys), n, figsize=(45, 20), gridspec_kw={'wspace': 0.1, 'hspace': 0.1})
+if len(bd_top_3_keys) == 1:
+    ax = np.atleast_2d(ax)
 
 
 
-for i, id in enumerate(bd_top_5_keys):
+
+for i, id in enumerate(bd_top_3_keys):
     cell_type = id.split("_")[0]
     
     UNETR_sam_vit_l = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_livecell_all_vit_l/boundaries/", id)
@@ -299,11 +321,15 @@ for i, id in enumerate(bd_top_5_keys):
     bd_gt = find_boundaries(gt)
     raw = imageio.imread(img_pth)
 
-    ax[i][0].imshow(raw, cmap='gray')
+    vmin = np.percentile(raw,5)  
+    vmax = np.percentile(raw, 95)
+
+    
+    ax[i][0].imshow(raw, cmap='gray', vmin=vmin, vmax=vmax)
     ax[i][1].imshow(pred_UNET.squeeze(), cmap='viridis')
-    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap='cividis')
+    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap='plasma')
     ax[i][3].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap='viridis')
-    ax[i][4].imshow(pred_UNETR_sc.squeeze(), cmap='cividis')
+    ax[i][4].imshow(pred_UNETR_sc.squeeze(), cmap='plasma')
     ax[i][5].imshow(bd_gt.squeeze(), cmap='viridis')
 
     for j in range(n):
@@ -326,18 +352,22 @@ for ax, model_name in zip(ax[0], model_names):
 
 
 plt.show()
-fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_boundary.png')
-
+fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_boundary.png', dpi=300)
+fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_boundary.pdf', dpi=300)
+fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_boundary.svg', dpi=300)
 
 
 
 ############# instance
 n = 6
-fig, ax = plt.subplots(len(ins_top_5_keys), n, figsize=(30, 15), gridspec_kw={'wspace': 0.3, 'hspace': 0.3})
+fig, ax = plt.subplots(len(ins_top_3_keys), n, figsize=(45, 20), gridspec_kw={'wspace': 0.1, 'hspace': 0.1})
+if len(ins_top_3_keys) == 1:
+    ax = np.atleast_2d(ax)
 
 
 
-for i, id in enumerate(ins_top_5_keys):
+
+for i, id in enumerate(ins_top_3_keys):
     cell_type = id.split("_")[0]
     
     UNETR_sam_vit_l = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_livecell_all_vit_l/instance/", id)
@@ -355,6 +385,9 @@ for i, id in enumerate(ins_top_5_keys):
     gt = imageio.imread(gt_pth)
     raw = imageio.imread(img_pth)
 
+   
+
+
     pred_UNETR_sam_vit_l_num_classes = len(np.unique(pred_UNETR_sam_vit_l))
     pred_UNETR_sam_vit_l_random_cmap = generate_random_colormap(pred_UNETR_sam_vit_l_num_classes)
 
@@ -366,14 +399,39 @@ for i, id in enumerate(ins_top_5_keys):
 
     pred_UNET_num_classes = len(np.unique(pred_UNET))
     pred_UNET_random_cmap = generate_random_colormap(pred_UNET_num_classes)
+
+    gt_num_classes = len(np.unique(gt))
+    gt_random_cmap = generate_random_colormap(gt_num_classes)
     
 
-    ax[i][0].imshow(raw, cmap='gray')
-    ax[i][1].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
-    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
-    ax[i][3].imshow(pred_UNET.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
-    ax[i][4].imshow(pred_UNETR_sc.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
-    ax[i][5].imshow(gt.squeeze(), cmap='viridis')
+    vmin = np.percentile(raw,5)  
+    vmax = np.percentile(raw, 95)
+
+    
+    ax[i][0].imshow(raw, cmap='gray', vmin=vmin, vmax=vmax)
+    ax[i][1].imshow(pred_UNETR_sam_vit_l.squeeze(), interpolation = 'nearest', cmap=pred_UNETR_sam_vit_l_random_cmap)
+    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), interpolation = 'nearest', cmap=pred_UNETR_sam_vit_b_random_cmap)
+    ax[i][3].imshow(pred_UNET.squeeze(), interpolation = 'nearest', cmap=pred_UNET_random_cmap)
+    ax[i][4].imshow(pred_UNETR_sc.squeeze(), interpolation = 'nearest', cmap=pred_UNETR_sc_random_cmap)
+    ax[i][5].imshow(gt.squeeze(), interpolation = 'nearest', cmap=gt_random_cmap)
+    
+    # ### check the background index
+    # unique_labels, label_counts = np.unique(pred_UNETR_sam_vit_b, return_counts=True)
+
+    # # Find the label with the highest frequency (background label)
+    # background_label = unique_labels[np.argmax(label_counts)]
+
+    # print("Background Label:", background_label)
+    # breakpoint()
+
+
+
+
+
+
+
+
+    
 
     for j in range(n):
             ax[i][j].set_xticks([])
@@ -395,5 +453,7 @@ for ax, model_name in zip(ax[0], model_names):
 
 
 plt.show()
-fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_instance.png')
+fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_instance.png', dpi=300)
+fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_instance.pdf', dpi=300)
+fig.savefig('/home/nimmahen/code/Figures/LiveCell_all_instance.svg', dpi=300)
 
