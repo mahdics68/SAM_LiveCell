@@ -14,37 +14,6 @@ import matplotlib.pyplot as plt
 
 
 
-#(if your ground truth is not binarised, make sure to put the parameter threshold_gt = 0.)
-
-
-# def dice_score(segmentation, groundtruth, threshold_seg=None, threshold_gt=None):
-#     """ Compute the dice score between binarized segmentation and ground-truth.
-#     Arguments:
-#         segmentation [np.ndarray] - candidate segmentation to evaluate
-#         groundtruth [np.ndarray] - groundtruth
-#         threshold_seg [float] - the threshold applied to the segmentation.
-#             If None the segmentation is not thresholded.
-#         threshold_gt [float] - the threshold applied to the ground-truth.
-#             If None the ground-truth is not thresholded.
-#     Returns:
-#         float - the dice score
-#     """
-#     assert segmentation.shape == groundtruth.shape, f"{segmentation.shape}, {groundtruth.shape}"
-#     if threshold_seg is None:
-#         seg = segmentation
-#     else:
-#         seg = segmentation > threshold_seg
-#     if threshold_gt is None:
-#         gt = groundtruth
-#     else:
-#         gt = groundtruth > threshold_gt
-
-#     nom = 2 * np.sum(gt * seg)
-#     denom = np.sum(gt) + np.sum(seg)
-
-#     eps = 1e-7
-#     score = float(nom) / float(denom + eps)
-#     return score
 np.random.seed(42)
 
 def generate_random_colormap(num_colors):
@@ -52,6 +21,17 @@ def generate_random_colormap(num_colors):
 
     colors = np.random.rand(num_colors, 3)
     return ListedColormap(colors)
+
+# def generate_random_colormap(num_colors, background_index=0):
+#     np.random.seed(42)
+
+#     # Generate random colors excluding the background color for index 0
+#     colors = np.random.rand(num_colors - 1, 3)
+
+#     # Insert a placeholder color for the background index
+#     colors = np.insert(colors, background_index, [0, 0, 0], axis=0)
+
+#     return ListedColormap(colors)
 
 cell_types = ["sampleA-", "sampleB-","sampleC-"]
 
@@ -67,7 +47,7 @@ ins_final_list = []
 for ind,i in enumerate(cell_types):
 
 
-    bd_dir = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_l/boundaries/", i+"*")
+    bd_dir = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_allpersample_vit_l/boundaries/", i+"*")
     n = 0 
     bd_dsl = []   
     bd_ds_dict = {}
@@ -92,7 +72,7 @@ for ind,i in enumerate(cell_types):
     bd_final_list.append(bd_ds_dict)
 
 
-    ins_dir = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_l/instance/", i+"*")
+    ins_dir = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_allpersample_vit_l/instance/", i+"*")
     n = 0
     ins_msal = []   
     ins_msa_dict = {}
@@ -171,17 +151,20 @@ ins_top_5_keys = [key for dictionary in ins_final_list for key, value in diction
 
 ###### boundary
 n = 6
-fig, ax = plt.subplots(len(bd_top_5_keys), n, figsize=(30, 15), gridspec_kw={'wspace': 0.3, 'hspace': 0.3})
+fig, ax = plt.subplots(len(bd_top_5_keys), n, figsize=(45, 20), gridspec_kw={'wspace': 0.1, 'hspace': 0.1})
+
+if len(ins_top_5_keys) == 1:
+    ax = np.atleast_2d(ax)
 
 
 
 for i, id in enumerate(bd_top_5_keys):
     cell_type = id.split("_")[0]
     
-    UNETR_sam_vit_l = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_l/boundaries/", id)
-    UNETR_sam_vit_b = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_b/boundaries/", id)
-    UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_cremi_30persample/boundaries/", id)
-    UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/last_cremi_30persample/boundaries/", id)
+    UNETR_sam_vit_l = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_allpersample_vit_l/boundaries/", id)
+    UNETR_sam_vit_b = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_allpersample_vit_b/boundaries/", id)
+    UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_cremi_allpersample/boundaries/", id)
+    UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/last_cremi_allpersample/boundaries/", id)
 
     gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_label/", id)
     img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_image/",id)
@@ -199,38 +182,51 @@ for i, id in enumerate(bd_top_5_keys):
    
     # import numpy as np
 
+    
+
     # # Assuming pred_UNETR_sam_vit_l, pred_UNETR_sam_vit_b, pred_UNETR_sc, pred_UNET are your model predictions
-    # predictions = [pred_UNETR_sam_vit_l, pred_UNETR_sam_vit_b, pred_UNETR_sc, pred_UNET]
+    # #predictions = [pred_UNETR_sam_vit_l, pred_UNETR_sam_vit_b, pred_UNETR_sc, pred_UNET]
+    # #predictions = [pred_UNET, pred_UNETR_sam_vit_l, pred_UNETR_sam_vit_b ]
+    # predictions = [pred_UNETR_sam_vit_l, pred_UNET]
+
 
     # # Assign unique colors to each model
-    # colors = ['red', 'green', 'blue', 'purple']
+    # # colors = ['red', 'green', 'blue', 'purple']
+    # # color_vectors = [(255,0,0), (0,255,0), (0,0,255)]
+
+    # colors = ['red', 'green']
+    # color_vectors = [(255,0,0), (0,255,0)]
+
+    # # Determine the shape of the composite image based on the first prediction
+    # composite_shape = predictions[0].shape
+    
 
     # # Create an empty array to store the composite image
-    # composite_image = np.zeros_like(predictions[0], dtype=np.uint8)
+    # #composite_image = np.zeros( composite_shape + (3,))
+    # composite_image = np.zeros( composite_shape + (3,))
+    
+    
 
     # # Combine predictions with different colors
     # for i, prediction in enumerate(predictions):
-    #     composite_image[prediction != 0] = np.array(plt.cm.colors.to_rgba(colors[i])[:3]) * 255
+    #     #prediction = np.squeeze(prediction)
+    #     mask = prediction >  0.5
+    #     #composite_image[mask] += np.array(plt.cm.colors.to_rgba(colors[i])[:3]) * 255
+    #     composite_image[mask] += np.array(color_vectors[i])
+
+    
+    # composite_image = np.squeeze(composite_image)
+    
 
     # # Display the composite image
     # plt.imshow(composite_image)
     # plt.show()
 
-    # fig.savefig('/home/nimmahen/code/Figures/cremi_allpersample_boundary_alltogether.png')
+    # fig.savefig('/home/nimmahen/code/Figures/cremi_30persample_boundary_best-worst.png')
     # breakpoint()
 
 
-    # pred_UNETR_sam_vit_l_num_classes = len(np.unique(pred_UNETR_sam_vit_l))
-    # pred_UNETR_sam_vit_l_random_cmap = generate_random_colormap(pred_UNETR_sam_vit_l_num_classes)
-
-    # pred_UNETR_sam_vit_b_num_classes = len(np.unique(pred_UNETR_sam_vit_b))
-    # pred_UNETR_sam_vit_b_random_cmap = generate_random_colormap(pred_UNETR_sam_vit_b_num_classes)
-
-    # pred_UNETR_sc_num_classes = len(np.unique(pred_UNETR_sc))
-    # pred_UNETR_sc_random_cmap = generate_random_colormap(pred_UNETR_sc_num_classes)
-
-    # pred_UNET_num_classes = len(np.unique(pred_UNET))
-    # pred_UNET_random_cmap = generate_random_colormap(pred_UNET_num_classes)
+ 
     
 
     # ax[0][i].imshow( raw, cmap='gray')
@@ -244,8 +240,8 @@ for i, id in enumerate(bd_top_5_keys):
     ax[i][0].imshow(raw, cmap='gray')
     ax[i][1].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap='viridis')
     ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap='plasma')
-    ax[i][3].imshow(pred_UNETR_sc.squeeze(), cmap='inferno')
-    ax[i][4].imshow(pred_UNET.squeeze(), cmap='magma')
+    ax[i][3].imshow(pred_UNETR_sc.squeeze(), cmap='viridis')
+    ax[i][4].imshow(pred_UNET.squeeze(), cmap='plasma')
     ax[i][5].imshow(bd_gt.squeeze(), cmap='viridis')
 
     for j in range(n):
@@ -268,7 +264,10 @@ for ax, model_name in zip(ax[0], model_names):
 
 
 plt.show()
-fig.savefig('/home/nimmahen/code/Figures/cremi_30persample_boundary.png')
+fig.savefig('/home/nimmahen/code/Figures/cremi_allpersample_boundary.pdf', dpi=300)
+fig.savefig('/home/nimmahen/code/Figures/cremi_allpersample_boundary.png', dpi=300)
+fig.savefig('/home/nimmahen/code/Figures/cremi_allpersample_boundary.svg', dpi=300)
+
 
 
 
@@ -278,17 +277,20 @@ fig.savefig('/home/nimmahen/code/Figures/cremi_30persample_boundary.png')
 #######instance
 
 n = 6
-fig, ax = plt.subplots(len(ins_top_5_keys), n, figsize=(30, 15), gridspec_kw={'wspace': 0.3, 'hspace': 0.3})
+fig, ax = plt.subplots(len(ins_top_5_keys), n, figsize=(45, 20), gridspec_kw={'wspace': 0.1, 'hspace': 0.1})
+
+if len(ins_top_5_keys) == 1:
+    ax = np.atleast_2d(ax)
 
 
 
 for i, id in enumerate(ins_top_5_keys):
     cell_type = id.split("_")[0]
     
-    UNETR_sam_vit_l = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_l/instance/", id)
-    UNETR_sam_vit_b = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_30persample_vit_b/instance/", id)
-    UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_cremi_30persample/instance/", id)
-    UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/last_cremi_30persample/instance/", id)
+    UNETR_sam_vit_l = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_allpersample_vit_l/instance/", id)
+    UNETR_sam_vit_b = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sam/prediction/last_cremi_allpersample_vit_b/instance/", id)
+    UNETR_sc = os.path.join("/scratch-grete/usr/nimmahen/models/UNETR/sc/prediction/last_cremi_allpersample/instance/", id)
+    UNET = os.path.join("/scratch-grete/usr/nimmahen/models/Unet/prediction/last_cremi_allpersample/instance/", id)
 
     gt_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_label/", id)
     img_pth = os.path.join("/scratch-grete/usr/nimmahen/data/Cremi/test_image/",id)
@@ -312,6 +314,8 @@ for i, id in enumerate(ins_top_5_keys):
     pred_UNET_num_classes = len(np.unique(pred_UNET))
     pred_UNET_random_cmap = generate_random_colormap(pred_UNET_num_classes)
     
+    gt_num_classes = len(np.unique(gt))
+    gt_random_cmap = generate_random_colormap(gt_num_classes)
 
     # ax[0][i].imshow( raw, cmap='gray')
     # ax[1][i].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
@@ -322,11 +326,11 @@ for i, id in enumerate(ins_top_5_keys):
 
     #ax[i].imshow(img_new)\n",
     ax[i][0].imshow(raw, cmap='gray')
-    ax[i][1].imshow(pred_UNETR_sam_vit_l.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
-    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
-    ax[i][3].imshow(pred_UNETR_sc.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
-    ax[i][4].imshow(pred_UNET.squeeze(), cmap=pred_UNETR_sam_vit_l_random_cmap)
-    ax[i][5].imshow(gt.squeeze(), cmap='viridis')
+    ax[i][1].imshow(pred_UNETR_sam_vit_l.squeeze(), interpolation = 'nearest', cmap=pred_UNETR_sam_vit_l_random_cmap)
+    ax[i][2].imshow(pred_UNETR_sam_vit_b.squeeze(), interpolation = 'nearest', cmap=pred_UNETR_sam_vit_b_random_cmap)
+    ax[i][3].imshow(pred_UNETR_sc.squeeze(), interpolation = 'nearest', cmap=pred_UNETR_sc_random_cmap)
+    ax[i][4].imshow(pred_UNET.squeeze(), interpolation = 'nearest', cmap=pred_UNET_random_cmap)
+    ax[i][5].imshow(gt.squeeze(), interpolation = 'nearest', cmap=gt_random_cmap)
 
     for j in range(n):
             ax[i][j].set_xticks([])
@@ -348,7 +352,11 @@ for ax, model_name in zip(ax[0], model_names):
 
 
 plt.show()
-fig.savefig('/home/nimmahen/code/Figures/cremi_30persample_instance.png')
+fig.savefig('/home/nimmahen/code/Figures/cremi_allpersample_instance.pdf', dpi=300)
+fig.savefig('/home/nimmahen/code/Figures/cremi_allpersample_instance.png', dpi=300)
+fig.savefig('/home/nimmahen/code/Figures/cremi_allpersample_instance.svg', dpi=300)
+
+
     
 
 
